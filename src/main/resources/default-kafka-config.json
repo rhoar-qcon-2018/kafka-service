@@ -1,0 +1,12 @@
+{
+  "port": 9092,
+  "zkPort": 2181,
+  "bootstrap.servers": "localhost:9092",
+  "key.deserializer": "org.apache.kafka.common.serialization.StringDeserializer",
+  "value.deserializer":"org.apache.kafka.common.serialization.StringDeserializer",
+  "key.serializer": "org.apache.kafka.common.serialization.StringSerializer",
+  "value.serializer": "org.apache.kafka.common.serialization.StringSerializer",
+  "group.id": "favorites.group",
+  "auto.offset.reset": "earliest",
+  "enable.auto.commit": false
+}
