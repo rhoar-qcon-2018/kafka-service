@@ -14,7 +14,7 @@ class MainVerticleSpec extends Specification {
     KafkaContainer kafka
 
     def setupSpec() {
-        if (System.getenv().hasProperty('KUBERNETES_NAMESPACE')) {
+        if (System.getenv().hasProperty('OPENSHIFT_BUILD_SOURCE')) {
             System.setProperty('bootstrap.servers', 'kafka-test:9092')
         } else {
             kafka = new KafkaContainer().withEmbeddedZookeeper()
