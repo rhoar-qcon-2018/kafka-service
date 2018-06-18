@@ -13,9 +13,6 @@ pipeline {
         }
         stage('OWASP Dependency Check') {
             steps {
-                agent {
-                    label "jenkins-slave-mvn"
-                }
                 sh 'mvn dependency-check:check'
             }
         }
