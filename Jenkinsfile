@@ -8,12 +8,7 @@ pipeline {
     stages {
         stage('Compile') {
             steps {
-                sh 'mvn compile'
-            }
-        }
-        stage('Test') {
-            steps {
-                sh 'mvn test'
+                sh 'mvn package vertx:package -DskipTests'
             }
         }
         stage('OWASP Dependency Check') {
