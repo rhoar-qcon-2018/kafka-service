@@ -43,20 +43,16 @@ pipeline {
         stage('Wait for SonarQube Quality Gate') {
             steps {
                 withSonarQubeEnv('sonar') {
-                    script {
-                        sh 'mvn sonar:sonar'
-                        def qualitygate = waitForQualityGate()
-                        echo qualitygate.status
-                        if (qualitygate.status != "OK") {
-                            error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
-                        }
+                    sh 'mvn sonar:sonar'
+                    def qualitygate = waitForQualityGate()
+                    if (qualitygate.status != "OK") {
+                        error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
                     }
                 }
             }
         }
         stage('OpenShift Configuration') {
             parallel {
-
                 stage('Create Binary BuildConfig') {
                     when {
                         expression {
