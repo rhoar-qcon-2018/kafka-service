@@ -42,9 +42,9 @@ pipeline {
         }
         stage('Wait for SonarQube Quality Gate') {
             steps {
-                withSonarQubeEnv('sonar') {
-                    sh 'mvn sonar:sonar'
-                    script {
+                script {
+                    withSonarQubeEnv('sonar') {
+                        sh 'mvn sonar:sonar'
                         def qualitygate = waitForQualityGate()
                         if (qualitygate.status != "OK") {
                             error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
