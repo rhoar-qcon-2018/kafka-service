@@ -38,20 +38,12 @@ pipeline {
                         }
                     }
                 }
-                stage('Quality Analysis') {
-                    steps {
-                        script {
-                            withSonarQubeEnv('sonar') {
-                                sh 'mvn sonar:sonar'
-                            }
-                        }
-                    }
-                }
             }
         }
         stage('Wait for SonarQube Quality Gate') {
             steps {
                 script {
+                    sh 'mvn sonar:sonar'
                     def qualitygate = waitForQualityGate()
                     echo qualitygate.status
                     if (qualitygate.status != "OK") {
