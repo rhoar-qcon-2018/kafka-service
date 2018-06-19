@@ -93,7 +93,7 @@ pipeline {
                                 def ciProject = openshift.project()
                                 def testProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-test/)
                                 openshift.withProject(testProject) {
-                                    openshift.newApp("${PROJECT_NAME}:latest~.", "--name=${PROJECT_NAME}").narrow('svc').expose()
+                                    openshift.newApp("${PROJECT_NAME}~.", "--name=${PROJECT_NAME}").narrow('svc').expose()
                                 }
                             }
                         }
@@ -119,7 +119,7 @@ pipeline {
                                 def ciProject = openshift.project()
                                 def devProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-dev/)
                                 openshift.withProject(devProject) {
-                                    openshift.newApp("${PROJECT_NAME}:latest~.", "--name=${PROJECT_NAME}").narrow('svc').expose()
+                                    openshift.newApp("${PROJECT_NAME}~.", "--name=${PROJECT_NAME}").narrow('svc').expose()
                                 }
                             }
                         }
