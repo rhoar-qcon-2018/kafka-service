@@ -68,7 +68,7 @@ pipeline {
                     steps {
                         script {
                             openshift.withCluster() {
-                                openshift.newBuild("--name=${PROJECT_NAME}", "--image-stream=redhat-openjdk18-openshift:1.1", "--binary", "--to=${PROJECT_NAME}")
+                                openshift.newBuild("--name=${PROJECT_NAME}", "--image-stream=redhat-openjdk18-openshift:1.1", "--binary", "--to='${PROJECT_NAME}:latest'")
                             }
                         }
                     }
