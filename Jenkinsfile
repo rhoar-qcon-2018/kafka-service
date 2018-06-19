@@ -53,6 +53,9 @@ pipeline {
                 }
             }
         }
+        stage('Publish Artifacts') {
+            sh 'mvn deploy:deploy -DaltSnapshotDeploymentRepository=nexus::default::'
+        }
         stage('OpenShift Configuration') {
             parallel {
                 stage('Create Binary BuildConfig') {
@@ -93,7 +96,7 @@ pipeline {
                                 def ciProject = openshift.project()
                                 def testProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-test/)
                                 openshift.withProject(testProject) {
-                                    openshift.newApp("${PROJECT_NAME}", "--image-stream=${PROJECT_NAME}").narrow('svc').expose()
+                                    openshift.newApp("--name=${PROJECT_NAME}", "--image-stream=${PROJECT_NAME}").narrow('svc').expose()
                                 }
                             }
                         }
@@ -119,7 +122,7 @@ pipeline {
                                 def ciProject = openshift.project()
                                 def devProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-dev/)
                                 openshift.withProject(devProject) {
-                                    openshift.newApp("${PROJECT_NAME}", "--image-stream=${PROJECT_NAME}").narrow('svc').expose()
+                                    openshift.newApp("--name=${PROJECT_NAME}", "--image-stream=${PROJECT_NAME}").narrow('svc').expose()
                                 }
                             }
                         }
