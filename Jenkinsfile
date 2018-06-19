@@ -14,9 +14,6 @@ pipeline {
             parallel {
                 stage('OWASP Dependency Check') {
                     steps {
-                        agent {
-                            label "jenkins-slave-mvn"
-                        }
                         sh 'mvn dependency-check:check'
                     }
                 }
@@ -46,13 +43,18 @@ pipeline {
                         script {
                             withSonarQubeEnv('sonar') {
                                 sh 'mvn sonar:sonar'
-                                def qualitygate = waitForQualityGate()
-                                if (qualitygate.status != "OK") {
-                                    error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
-                                }
                             }
                         }
                     }
+                }
+            }
+        }
+        stage('Wait for SonarQube Quality Gate') {
+            steps {
+                def qualitygate = waitForQualityGate()
+                echo qualitygate.status
+                if (qualitygate.status != "OK") {
+                    error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
                 }
             }
         }
