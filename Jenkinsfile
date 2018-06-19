@@ -11,6 +11,7 @@ pipeline {
     stages {
         stage('Compile & Test') {
             steps {
+                sh 'set'
                 sh 'mvn package vertx:package'
             }
         }
