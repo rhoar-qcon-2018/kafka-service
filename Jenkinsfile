@@ -100,8 +100,8 @@ pipeline {
                         expression {
                             openshift.withCluster() {
                                 def ciProject = openshift.project()
-                                def demoProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-demo/)
-                                openshift.withProject(demoProject) {
+                                def devProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-dev/)
+                                openshift.withProject(devProject) {
                                     return !openshift.selector('dc', PROJECT_NAME).exists()
                                 }
                             }
@@ -111,8 +111,8 @@ pipeline {
                         script {
                             openshift.withCluster() {
                                 def ciProject = openshift.project()
-                                def demoProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-demo/)
-                                openshift.withProject(demoProject) {
+                                def devProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-dev/)
+                                openshift.withProject(devProject) {
                                     openshift.newApp("${PROJECT_NAME}:latest", "--name=${PROJECT_NAME}").narrow('svc').expose()
                                 }
                             }
