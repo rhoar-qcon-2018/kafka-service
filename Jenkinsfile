@@ -19,6 +19,14 @@ pipeline {
         stage('OWASP Dependency Check') {
             steps {
                 sh 'mvn dependency-check:check'
+                publishHTML target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll: true,
+                        reportDir: 'target',
+                        reportFiles: 'dependency-check-report.html',
+                        reportName: 'OWASP Dependency Check Report'
+                ]
             }
         }
         stage('Ensure SonarQube Config') {
