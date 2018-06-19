@@ -24,10 +24,10 @@ pipeline {
                 script {
                     withSonarQubeEnv() {
                         sh 'mvn sonar:sonar'
-                    }
-                    def qualitygate = waitForQualityGate()
-                    if (qualitygate.status != "OK") {
-                        error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
+                        def qualitygate = waitForQualityGate()
+                        if (qualitygate.status != "OK") {
+                            error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
+                        }
                     }
                 }
             }
