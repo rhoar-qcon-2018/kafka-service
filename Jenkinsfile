@@ -29,7 +29,7 @@ pipeline {
                 ]
             }
         }
-        stage('Ensure SonarQube Config') {
+        stage('Ensure SonarQube Webhook is configured') {
             when {
                 expression {
                     withSonarQubeEnv('sonar') {
