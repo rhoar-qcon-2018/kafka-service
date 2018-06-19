@@ -14,6 +14,7 @@ class MainVerticleSpec extends Specification {
     KafkaContainer kafka
 
     def setupSpec() {
+        System.getenv().forEach({ e -> println("${e.key} : ${e.value}")})
         if (System.getenv('OPENSHIFT_BUILD_SOURCE') == null || System.getenv('OPENSHIFT_BUILD_SOURCE').trim() == '') {
             System.setProperty('bootstrap.servers', System.getenv('OPENSHIFT_KAFKA_BOOTSTRAP'))
             println('Building Inside OpenShift, Cannot use TestContainers')
