@@ -42,8 +42,8 @@ pipeline {
         }
         stage('Wait for SonarQube Quality Gate') {
             steps {
-                script {
-                    withSonarQubeEnv('sonar') {
+                withSonarQubeEnv('sonar') {
+                    script {
                         sh 'mvn sonar:sonar'
                         def qualitygate = waitForQualityGate()
                         echo qualitygate.status
