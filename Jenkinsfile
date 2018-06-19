@@ -6,9 +6,9 @@ pipeline {
         PROJECT_NAME = 'kafka-service'
     }
     stages {
-        stage('Compile') {
+        stage('Compile & Test') {
             steps {
-                sh 'mvn package vertx:package -DskipTests'
+                sh 'mvn package vertx:package'
             }
         }
         stage('OWASP Dependency Check') {
