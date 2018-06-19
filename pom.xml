@@ -15,7 +15,6 @@
         <vertx.verticle>com.redhat.qcon.kafka.MainVerticle</vertx.verticle>
         <!-- Maven plugins -->
         <vertx-maven-plugin.version>1.0.13</vertx-maven-plugin.version>
-        <project.build.finalName>${project.name}</project.build.finalName>
     </properties>
     <dependencyManagement>
         <dependencies>
