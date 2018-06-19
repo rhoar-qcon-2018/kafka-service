@@ -57,9 +57,11 @@ pipeline {
             parallel {
                 stage('Create Binary BuildConfig') {
                     when {
-                        expression {
-                            openshift.withCluster() {
-                                return !openshift.selector('bc', PROJECT_NAME).exists()
+                        not {
+                            expression {
+                                openshift.withCluster() {
+                                    return openshift.selector('bc', PROJECT_NAME).exists()
+                                }
                             }
                         }
                     }
@@ -73,12 +75,14 @@ pipeline {
                 }
                 stage('Create Test Deployment') {
                     when {
-                        expression {
-                            openshift.withCluster() {
-                                def ciProject = openshift.project()
-                                def testProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-test/)
-                                openshift.withProject(testProject) {
-                                    return !openshift.selector('dc', PROJECT_NAME).exists()
+                        not {
+                            expression {
+                                openshift.withCluster() {
+                                    def ciProject = openshift.project()
+                                    def testProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-test/)
+                                    openshift.withProject(testProject) {
+                                        return openshift.selector('dc', PROJECT_NAME).exists()
+                                    }
                                 }
                             }
                         }
@@ -89,7 +93,7 @@ pipeline {
                                 def ciProject = openshift.project()
                                 def testProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-test/)
                                 openshift.withProject(testProject) {
-                                    openshift.newApp("${PROJECT_NAME}:latest", "--name=${PROJECT_NAME}").narrow('svc').expose()
+                                    openshift.newApp("${PROJECT_NAME}:latest", "--name=${PROJECT_NAME}", "--allow-missing-imagestream-tags=true").narrow('svc').expose()
                                 }
                             }
                         }
@@ -97,12 +101,14 @@ pipeline {
                 }
                 stage('Create Demo Deployment') {
                     when {
-                        expression {
-                            openshift.withCluster() {
-                                def ciProject = openshift.project()
-                                def devProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-dev/)
-                                openshift.withProject(devProject) {
-                                    return !openshift.selector('dc', PROJECT_NAME).exists()
+                        not {
+                            expression {
+                                openshift.withCluster() {
+                                    def ciProject = openshift.project()
+                                    def devProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-dev/)
+                                    openshift.withProject(devProject) {
+                                        return openshift.selector('dc', PROJECT_NAME).exists()
+                                    }
                                 }
                             }
                         }
@@ -113,7 +119,7 @@ pipeline {
                                 def ciProject = openshift.project()
                                 def devProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-dev/)
                                 openshift.withProject(devProject) {
-                                    openshift.newApp("${PROJECT_NAME}:latest", "--name=${PROJECT_NAME}").narrow('svc').expose()
+                                    openshift.newApp("${PROJECT_NAME}:latest", "--name=${PROJECT_NAME}", "--allow-missing-imagestream-tags=true").narrow('svc').expose()
                                 }
                             }
                         }
