@@ -7,7 +7,7 @@ pipeline {
     }
     environment {
         PROJECT_NAME = 'kafka-service'
-        OPENSHIFT_KAFKA_BOOTSTRAP = 'my-cluster-kafka-default.apps.qcon.openshift.opentlc.com:80'
+        OPENSHIFT_KAFKA_BOOTSTRAP = 'my-cluster-kafka.default:9092'
     }
     stages {
         stage('Compile & Test') {
