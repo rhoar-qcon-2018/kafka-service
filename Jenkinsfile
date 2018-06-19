@@ -2,6 +2,9 @@ pipeline {
     agent {
         label 'jenkins-slave-mvn'
     }
+    options {
+        timeout(time: 15, unit: 'MINUTES')
+    }
     environment {
         PROJECT_NAME = 'kafka-service'
     }
