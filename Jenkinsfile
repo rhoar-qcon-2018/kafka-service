@@ -73,6 +73,32 @@ pipeline {
                         }
                     }
                 }
+                stage('Create Test ImageStream') {
+                    when {
+                        not {
+                            expression {
+                                openshift.withCluster() {
+                                    def ciProject = openshift.project()
+                                    def testProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-test/)
+                                    openshift.withProject(testProject) {
+                                        return openshift.selector('is', PROJECT_NAME).exists()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    steps {
+                        script {
+                            openshift.withCluster() {
+                                def ciProject = openshift.project()
+                                def testProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-test/)
+                                openshift.withProject(testProject) {
+                                    openshift.create("imagestream", "${PROJECT_NAME}")
+                                }
+                            }
+                        }
+                    }
+                }
                 stage('Create Test Deployment') {
                     when {
                         not {
@@ -93,7 +119,33 @@ pipeline {
                                 def ciProject = openshift.project()
                                 def testProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-test/)
                                 openshift.withProject(testProject) {
-                                    openshift.newApp("${PROJECT_NAME}~.", "--name=${PROJECT_NAME}").narrow('svc').expose()
+                                    openshift.newApp("${PROJECT_NAME}", "--image-stream=${PROJECT_NAME}").narrow('svc').expose()
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('Create Demo ImageStream') {
+                    when {
+                        not {
+                            expression {
+                                openshift.withCluster() {
+                                    def ciProject = openshift.project()
+                                    def devProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-dev/)
+                                    openshift.withProject(devProject) {
+                                        return openshift.selector('is', PROJECT_NAME).exists()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    steps {
+                        script {
+                            openshift.withCluster() {
+                                def ciProject = openshift.project()
+                                def devProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-dev/)
+                                openshift.withProject(devProject) {
+                                    openshift.create("imagestream", "${PROJECT_NAME}")
                                 }
                             }
                         }
@@ -119,7 +171,7 @@ pipeline {
                                 def ciProject = openshift.project()
                                 def devProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-dev/)
                                 openshift.withProject(devProject) {
-                                    openshift.newApp("${PROJECT_NAME}~.", "--name=${PROJECT_NAME}").narrow('svc').expose()
+                                    openshift.newApp("${PROJECT_NAME}~.", "--image-stream=${PROJECT_NAME}").narrow('svc').expose()
                                 }
                             }
                         }
