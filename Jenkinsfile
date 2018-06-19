@@ -55,7 +55,7 @@ pipeline {
         }
         stage('Publish Artifacts') {
             steps {
-                sh 'mvn deploy:deploy -DaltSnapshotDeploymentRepository=nexus::default::http://nexus:8081/repository/maven-snapshots/'
+                sh 'mvn deploy:deploy -DaltDeploymentRepository=nexus::default::http://nexus:8081/repository/maven-snapshots/'
             }
         }
         stage('OpenShift Configuration') {
