@@ -14,12 +14,12 @@ pipeline {
             parallel {
                 stage('OWASP Dependency Check') {
                     steps {
-                        sh 'mvn dependency-check:check'
+                        sh 'mvn -T 2 dependency-check:check'
                     }
                 }
                 stage('Compile & Test') {
                     steps {
-                        sh 'mvn package vertx:package'
+                        sh 'mvn -T 2 package vertx:package'
                     }
                 }
                 stage('Ensure SonarQube Webhook is configured') {
@@ -44,12 +44,12 @@ pipeline {
             steps {
                 script {
                     withSonarQubeEnv('sonar') {
-                        sh 'mvn sonar:sonar'
-                        def qualitygate = waitForQualityGate()
-                        qualitygate.forEach({ i -> println(i) })
-                        if (qualitygate.status != "OK") {
-                            error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
-                        }
+                        sh 'mvn -T 2 sonar:sonar'
+                    }
+                    def qualitygate = waitForQualityGate()
+                    qualitygate.forEach({ i -> println(i) })
+                    if (qualitygate.status != "OK") {
+                        error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
                     }
                 }
             }
