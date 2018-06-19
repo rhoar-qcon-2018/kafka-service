@@ -33,7 +33,7 @@ pipeline {
             when {
                 expression {
                     withSonarQubeEnv('sonar') {
-                        sh "curl -u \"${SONAR_AUTH_TOKEN}:\" https://sonarqube:9000-/api/webhooks/list | grep Jenkins"
+                        sh "curl -u \"${SONAR_AUTH_TOKEN}:\" https://sonarqube:9000/api/webhooks/list | grep Jenkins"
                     }
                 }
             }
