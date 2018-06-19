@@ -14,12 +14,12 @@ pipeline {
             parallel {
                 stage('OWASP Dependency Check') {
                     steps {
-                        mvn 'dependency-check:check'
+                        sh 'mvn dependency-check:check'
                     }
                 }
                 stage('Compile & Test') {
                     steps {
-                        mvn 'package vertx:package'
+                        sh 'mvn package vertx:package'
                     }
                 }
                 stage('Ensure SonarQube Webhook is configured') {
@@ -43,7 +43,7 @@ pipeline {
         stage('Wait for SonarQube Quality Gate') {
             steps {
                 withSonarQubeEnv('sonar') {
-                    mvn 'sonar:sonar'
+                    sh 'mvn sonar:sonar'
                     script {
                         def qualitygate = waitForQualityGate()
                         if (qualitygate.status != "OK") {
