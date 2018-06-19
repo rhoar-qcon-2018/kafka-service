@@ -68,33 +68,7 @@ pipeline {
                     steps {
                         script {
                             openshift.withCluster() {
-                                openshift.newBuild("--name=${PROJECT_NAME}", "--image-stream=redhat-openjdk18-openshift:1.1", "--binary")
-                            }
-                        }
-                    }
-                }
-                stage('Create Test ImageStream') {
-                    when {
-                        not {
-                            expression {
-                                openshift.withCluster() {
-                                    def ciProject = openshift.project()
-                                    def testProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-test/)
-                                    openshift.withProject(testProject) {
-                                        return openshift.selector('is', PROJECT_NAME).exists()
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    steps {
-                        script {
-                            openshift.withCluster() {
-                                def ciProject = openshift.project()
-                                def testProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-test/)
-                                openshift.withProject(testProject) {
-                                    openshift.create("imagestream", "${PROJECT_NAME}")
-                                }
+                                openshift.newBuild("--name=${PROJECT_NAME}", "--image-stream=redhat-openjdk18-openshift:1.1", "--binary", "--to=${PROJECT_NAME}")
                             }
                         }
                     }
@@ -125,32 +99,6 @@ pipeline {
                         }
                     }
                 }
-                stage('Create Demo ImageStream') {
-                    when {
-                        not {
-                            expression {
-                                openshift.withCluster() {
-                                    def ciProject = openshift.project()
-                                    def devProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-dev/)
-                                    openshift.withProject(devProject) {
-                                        return openshift.selector('is', PROJECT_NAME).exists()
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    steps {
-                        script {
-                            openshift.withCluster() {
-                                def ciProject = openshift.project()
-                                def devProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-dev/)
-                                openshift.withProject(devProject) {
-                                    openshift.create("imagestream", "${PROJECT_NAME}")
-                                }
-                            }
-                        }
-                    }
-                }
                 stage('Create Demo Deployment') {
                     when {
                         not {
@@ -171,7 +119,7 @@ pipeline {
                                 def ciProject = openshift.project()
                                 def devProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-dev/)
                                 openshift.withProject(devProject) {
-                                    openshift.newApp("${PROJECT_NAME}~.", "--image-stream=${PROJECT_NAME}").narrow('svc').expose()
+                                    openshift.newApp("${PROJECT_NAME}", "--image-stream=${PROJECT_NAME}").narrow('svc').expose()
                                 }
                             }
                         }
@@ -182,8 +130,9 @@ pipeline {
         stage('Build Image') {
             steps {
                 script {
+                    def fileName = findFiles(glob: "target/${PROJECT_NAME}-*.jar")[0]
                     openshift.withCluster() {
-                        openshift.selector('bc', PROJECT_NAME).startBuild("--from-file=target/${PROJECT_NAME}.jar", '--wait')
+                        openshift.selector('bc', PROJECT_NAME).startBuild("--from-file=${fileName}", '--wait')
                     }
                 }
             }
