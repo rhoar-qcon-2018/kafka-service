@@ -7,6 +7,7 @@ pipeline {
     }
     environment {
         PROJECT_NAME = 'kafka-service'
+        OPENSHIFT_KAFKA_BOOTSTRAP = ''
     }
     stages {
         stage('Compile & Test') {
@@ -20,10 +21,23 @@ pipeline {
                 sh 'mvn dependency-check:check'
             }
         }
+        stage('Ensure SonarQube Config') {
+            when {
+                expression {
+                    sh "curl -u \"${SONAR_AUTH_TOKEN}:\" https://sonarqube:9000-/api/webhooks/list | grep Jenkins"
+                }
+            }
+            steps {
+                withSonarQubeEnv() {
+                    sh "curl -X POST -u \"${SONAR_AUTH_TOKEN}:\" -F \"name=Jenkins\" -F \"url=http://jenkins/sonarqube-webhook/\" https://sonarqube:9000/api/webhooks/update"
+                }
+            }
+        }
         stage('Quality Analysis') {
             steps {
                 script {
                     withSonarQubeEnv() {
+                        sh "curl -vv -X POST -u \"${SONAR_AUTH_TOKEN}:\" -F \"name=Jenkins\" -F \"url=http://jenkins/sonarqube-webhook/\" https://sonarqube:9000-/api/webhooks/update"
                         sh 'mvn sonar:sonar'
                         def qualitygate = waitForQualityGate()
                         if (qualitygate.status != "OK") {
