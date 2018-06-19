@@ -135,9 +135,8 @@ pipeline {
         stage('Build Image') {
             steps {
                 script {
-                    def fileName = findFiles(glob: "target/${PROJECT_NAME}-*.jar")[0]
                     openshift.withCluster() {
-                        openshift.selector('bc', PROJECT_NAME).startBuild("--from-file=${fileName}", '--wait')
+                        openshift.selector('bc', PROJECT_NAME).startBuild("--from-file=${PROJECT_NAME}.jar", '--wait')
                     }
                 }
             }
