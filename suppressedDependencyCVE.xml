@@ -21,4 +21,25 @@
         <gav regex="true">^io\.vertx:vertx-infinispan:.*$</gav>
         <cpe>cpe:/a:infinispan:infinispan</cpe>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: zookeeper-3.4.10.jar
+   ]]></notes>
+        <gav regex="true">^org\.apache\.zookeeper:zookeeper:.*$</gav>
+        <cpe>cpe:/a:apache:zookeeper</cpe>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: infinispan-cloud-9.1.3.Final.jar
+   ]]></notes>
+        <gav regex="true">^org\.infinispan:infinispan-cloud:.*$</gav>
+        <cpe>cpe:/a:infinispan:infinispan</cpe>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: jgroups-kubernetes-1.0.3.Final.jar
+   ]]></notes>
+        <gav regex="true">^org\.jgroups\.kubernetes:jgroups-kubernetes:.*$</gav>
+        <cpe>cpe:/a:kubernetes:kubernetes</cpe>
+    </suppress>
 </suppressions>
