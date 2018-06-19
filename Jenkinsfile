@@ -84,7 +84,7 @@ pipeline {
                             expression {
                                 openshift.withCluster() {
                                     def ciProject = openshift.project()
-                                    def testProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-test/)
+                                    def testProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-test')
                                     openshift.withProject(testProject) {
                                         return openshift.selector('dc', PROJECT_NAME).exists()
                                     }
@@ -96,10 +96,8 @@ pipeline {
                         script {
                             openshift.withCluster() {
                                 def ciProject = openshift.project()
-                                def testProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-test/)
-                                openshift.withProject(testProject) {
-                                    openshift.newApp("--name=${PROJECT_NAME}", "--allow-missing-imagestream-tags=true", "--image-stream=${PROJECT_NAME}").narrow('svc').expose()
-                                }
+                                def testProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-test')
+                                openshift.newApp("--name=${PROJECT_NAME}", "-n", "${testProject}", "--allow-missing-imagestream-tags=true", "--image-stream=${PROJECT_NAME}").narrow('svc').expose()
                             }
                         }
                     }
@@ -110,7 +108,7 @@ pipeline {
                             expression {
                                 openshift.withCluster() {
                                     def ciProject = openshift.project()
-                                    def devProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-dev/)
+                                    def devProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-dev')
                                     openshift.withProject(devProject) {
                                         return openshift.selector('dc', PROJECT_NAME).exists()
                                     }
@@ -122,10 +120,8 @@ pipeline {
                         script {
                             openshift.withCluster() {
                                 def ciProject = openshift.project()
-                                def devProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-dev/)
-                                openshift.withProject(devProject) {
-                                    openshift.newApp("--name=${PROJECT_NAME}", "--allow-missing-imagestream-tags=true", "--image-stream=${PROJECT_NAME}").narrow('svc').expose()
-                                }
+                                def devProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-dev')
+                                openshift.newApp("--name=${PROJECT_NAME}", "-n", "${devProject}", "--allow-missing-imagestream-tags=true", "--image-stream=${PROJECT_NAME}").narrow('svc').expose()
                             }
                         }
                     }
