@@ -9,8 +9,8 @@ pipeline {
         PROJECT_NAME = 'kafka-service'
         OPENSHIFT_KAFKA_BOOTSTRAP = 'my-cluster-kafka.default:9092'
     }
-/*    stages {
-        stage('Quality And Security') {
+    stages {
+/*        stage('Quality And Security') {
             parallel {
                 stage('OWASP Dependency Check') {
                     steps {
