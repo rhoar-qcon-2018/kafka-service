@@ -68,7 +68,7 @@ items:
     labels:
       build: '${project}'
     name: '${project}'
-    namespace: '${namespace}'
+    namespace: '${targetNamespace}'
   spec: {}
 - apiVersion: v1
   kind: DeploymentConfig
@@ -236,6 +236,11 @@ pipeline {
                 stage('Create Binary BuildConfig') {
                     steps {
                         script {
+                            openshift.withCluster() {
+                                openshift.withProject(ciProject) {
+                                    openshift.apply('imagestream', PROJECT_NAME)
+                                }
+                            }
                             buildConfig(PROJECT_NAME, ciProject, UUID.randomUUID().toString())
                         }
                     }
