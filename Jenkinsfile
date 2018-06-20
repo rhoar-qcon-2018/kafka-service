@@ -142,7 +142,7 @@ pipeline {
                 script {
                     openshift.withCluster() {
                         def ciProject = openshift.project()
-                        def testProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-test/)
+                        def testProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-test')
                         openshift.tag("${PROJECT_NAME}:latest", "${testProject}/${PROJECT_NAME}:latest")
                     }
                 }
@@ -157,8 +157,8 @@ pipeline {
                 script {
                     openshift.withCluster() {
                         def ciProject = openshift.project()
-                        def demoProject = ciProject.replaceFirst(/^labs-ci-cd/, /labs-demo/)
-                        openshift.tag("${PROJECT_NAME}:latest", "${demoProject}/${PROJECT_NAME}:latest")
+                        def devProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-dev')
+                        openshift.tag("${PROJECT_NAME}:latest", "${devProject}/${PROJECT_NAME}:latest")
                     }
                 }
             }
