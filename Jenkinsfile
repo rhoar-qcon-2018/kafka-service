@@ -263,14 +263,14 @@ pipeline {
                 }
             }
         }
-        stage('Promote to TEST') {
+        stage('Deploy to TEST') {
             steps {
                 script {
                     openshift.tag("${PROJECT_NAME}:latest", "${testProject}/${PROJECT_NAME}:latest")
                 }
             }
         }
-        stage('Promote to DEMO') {
+        stage('Promote to DEV') {
             input {
                 message "Promote service to DEMO environment?"
                 ok "PROMOTE"
