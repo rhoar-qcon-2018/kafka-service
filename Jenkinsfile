@@ -58,8 +58,8 @@ pipeline {
                 sh 'mvn package vertx:package deploy:deploy -DskipTests -DaltDeploymentRepository=nexus::default::http://nexus:8081/repository/maven-snapshots/'
             }
         }*/
-        stage('OpenShift Configuration') {
-//            parallel {
+/*        stage('OpenShift Configuration') {
+            parallel { */
                 stage('Create Binary BuildConfig') {
                     when {
                         not {
@@ -130,8 +130,8 @@ pipeline {
                         }
                     }
                 }
-//            }
-        }
+/*            }
+        }*/
 /*        stage('Build Image') {
             steps {
                 script {
