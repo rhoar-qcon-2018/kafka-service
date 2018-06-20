@@ -9,7 +9,7 @@ pipeline {
         PROJECT_NAME = 'kafka-service'
         OPENSHIFT_KAFKA_BOOTSTRAP = 'my-cluster-kafka.default:9092'
     }
-    stages {
+/*    stages {
         stage('Quality And Security') {
             parallel {
                 stage('OWASP Dependency Check') {
@@ -57,7 +57,7 @@ pipeline {
             steps {
                 sh 'mvn package vertx:package deploy:deploy -DskipTests -DaltDeploymentRepository=nexus::default::http://nexus:8081/repository/maven-snapshots/'
             }
-        }
+        }*/
         stage('OpenShift Configuration') {
             parallel {
                 stage('Create Binary BuildConfig') {
@@ -85,6 +85,7 @@ pipeline {
                                 openshift.withCluster() {
                                     def ciProject = openshift.project()
                                     def testProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-test')
+                                    println(testProject)
                                     openshift.withProject(testProject) {
                                         return openshift.selector('dc', PROJECT_NAME).exists()
                                     }
@@ -97,6 +98,7 @@ pipeline {
                             openshift.withCluster() {
                                 def ciProject = openshift.project()
                                 def testProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-test')
+                                println(testProject)
                                 openshift.newApp("--name=${PROJECT_NAME}", "-n", "${testProject}", "--allow-missing-imagestream-tags=true", "--image-stream=${PROJECT_NAME}").narrow('svc').expose()
                             }
                         }
@@ -109,6 +111,7 @@ pipeline {
                                 openshift.withCluster() {
                                     def ciProject = openshift.project()
                                     def devProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-dev')
+                                    println(devProject)
                                     openshift.withProject(devProject) {
                                         return openshift.selector('dc', PROJECT_NAME).exists()
                                     }
@@ -121,6 +124,7 @@ pipeline {
                             openshift.withCluster() {
                                 def ciProject = openshift.project()
                                 def devProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-dev')
+                                println(devProject)
                                 openshift.newApp("--name=${PROJECT_NAME}", "-n", "${devProject}", "--allow-missing-imagestream-tags=true", "--image-stream=${PROJECT_NAME}").narrow('svc').expose()
                             }
                         }
@@ -128,7 +132,7 @@ pipeline {
                 }
             }
         }
-        stage('Build Image') {
+/*        stage('Build Image') {
             steps {
                 script {
                     openshift.withCluster() {
@@ -179,5 +183,5 @@ pipeline {
                 }
             }
         }
-    }
+    }*/
 }
