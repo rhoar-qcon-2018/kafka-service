@@ -10,7 +10,7 @@ pipeline {
         OPENSHIFT_KAFKA_BOOTSTRAP = 'my-cluster-kafka.default:9092'
     }
     stages {
-/*        stage('Quality And Security') {
+        stage('Quality And Security') {
             parallel {
                 stage('OWASP Dependency Check') {
                     steps {
@@ -57,9 +57,9 @@ pipeline {
             steps {
                 sh 'mvn package vertx:package deploy:deploy -DskipTests -DaltDeploymentRepository=nexus::default::http://nexus:8081/repository/maven-snapshots/'
             }
-        }*/
-/*        stage('OpenShift Configuration') {
-            parallel { */
+        }
+        stage('OpenShift Configuration') {
+            parallel {
                 stage('Create Binary BuildConfig') {
                     when {
                         not {
@@ -126,9 +126,9 @@ pipeline {
                         }
                     }
                 }
-/*            }
-        }*/
-/*        stage('Build Image') {
+            }
+        }
+        stage('Build Image') {
             steps {
                 script {
                     openshift.withCluster() {
@@ -178,6 +178,6 @@ pipeline {
                     }
                 }
             }
-        }*/
+        }
     }
 }
