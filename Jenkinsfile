@@ -183,7 +183,7 @@ pipeline {
         OPENSHIFT_KAFKA_BOOTSTRAP = 'my-cluster-kafka.default:9092'
     }
     stages {
-        stage('Quality And Security') {
+/*        stage('Quality And Security') {
             parallel {
                 stage('OWASP Dependency Check') {
                     steps {
@@ -194,7 +194,7 @@ pipeline {
                     steps {
                         sh 'mvn -T 2 package vertx:package'
                     }
-                }
+                }*/
                 stage('Ensure SonarQube Webhook is configured') {
                     when {
                         not {
@@ -213,7 +213,7 @@ pipeline {
                         }
                     }
                 }
-            }
+/*            }
         }
         stage('Wait for SonarQube Quality Gate') {
             steps {
@@ -282,6 +282,6 @@ pipeline {
                     openshift.tag("${PROJECT_NAME}:latest", "${devProject}/${PROJECT_NAME}:latest")
                 }
             }
-        }
+        }*/
     }
 }
