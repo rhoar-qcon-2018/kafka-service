@@ -59,7 +59,7 @@ pipeline {
             }
         }*/
         stage('OpenShift Configuration') {
-            parallel {
+//            parallel {
                 stage('Create Binary BuildConfig') {
                     when {
                         not {
@@ -85,7 +85,6 @@ pipeline {
                                 openshift.withCluster() {
                                     def ciProject = openshift.project()
                                     def testProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-test')
-                                    println(testProject)
                                     openshift.withProject(testProject) {
                                         return openshift.selector('dc', PROJECT_NAME).exists()
                                     }
@@ -98,8 +97,9 @@ pipeline {
                             openshift.withCluster() {
                                 def ciProject = openshift.project()
                                 def testProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-test')
-                                println(testProject)
-                                openshift.newApp("--name=${PROJECT_NAME}", "-n", "${testProject}", "--allow-missing-imagestream-tags=true", "--image-stream=${PROJECT_NAME}").narrow('svc').expose()
+                                openshift.withProject(testProject) {
+                                    openshift.newApp("--name=${PROJECT_NAME}", "--allow-missing-imagestream-tags=true", "--image-stream=${PROJECT_NAME}").narrow('svc').expose()
+                                }
                             }
                         }
                     }
@@ -111,7 +111,6 @@ pipeline {
                                 openshift.withCluster() {
                                     def ciProject = openshift.project()
                                     def devProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-dev')
-                                    println(devProject)
                                     openshift.withProject(devProject) {
                                         return openshift.selector('dc', PROJECT_NAME).exists()
                                     }
@@ -124,13 +123,14 @@ pipeline {
                             openshift.withCluster() {
                                 def ciProject = openshift.project()
                                 def devProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-dev')
-                                println(devProject)
-                                openshift.newApp("--name=${PROJECT_NAME}", "-n", "${devProject}", "--allow-missing-imagestream-tags=true", "--image-stream=${PROJECT_NAME}").narrow('svc').expose()
+                                openshift.withProject(devProject) {
+                                    openshift.newApp("--name=${PROJECT_NAME}", "--allow-missing-imagestream-tags=true", "--image-stream=${PROJECT_NAME}").narrow('svc').expose()
+                                }
                             }
                         }
                     }
                 }
-            }
+//            }
         }
 /*        stage('Build Image') {
             steps {
