@@ -200,7 +200,9 @@ pipeline {
                         not {
                             expression {
                                 withSonarQubeEnv('sonar') {
-                                    return sh(returnStatus: true, script: "curl -u \"${SONAR_AUTH_TOKEN}:\" http://sonarqube:9000/api/webhooks/list | grep Jenkins")
+                                    def retVal = sh(returnStatus: true, script: "curl -u \"${SONAR_AUTH_TOKEN}:\" http://sonarqube:9000/api/webhooks/list | grep Jenkins")
+                                    echo "CURL COMMAND: ${retVal}"
+                                    return retVal
                                 }
                             }
                         }
