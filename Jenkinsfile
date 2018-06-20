@@ -268,7 +268,7 @@ pipeline {
             parallel {
                 stage('Publish Artifacts') {
                     steps {
-                        sh 'mvn package vertx:package deploy:deploy -DskipTests -DaltDeploymentRepository=nexus::default::http://nexus:8081/repository/maven-snapshots/'
+                        sh 'mvn package vertx:package deploy:deploy -DskipTests -DaltDeploymentRepository=nexus::default::http://nexus:8081/repository/maven-releases/'
                     }
                 }
                 stage('Create Binary BuildConfig') {
