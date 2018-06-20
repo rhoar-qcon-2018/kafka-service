@@ -1,6 +1,13 @@
-def ciProject = openshift.project()
-def testProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-test')
-def devProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-dev')
+def ciProject = 'labs-ci-cd'
+def testProject = 'labs-test'
+def devProject = 'labs-dev'
+openshift.withCluster() {
+    openshift.withProject() {
+        ciProject = openshift.project()
+        testProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-test')
+        devProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-dev')
+    }
+}
 
 def buildImageStream = {project, namespace ->
     def template = """
@@ -173,6 +180,36 @@ items:
     }
 }
 
+def configMap = {namespace, project ->
+    def template = '''
+apiVersion: v1
+data:
+  adjective: |-
+    {
+      "host": "adjective-service",
+      "port": 80
+    }
+  http: |-
+    {
+      "address": "0.0.0.0",
+      "port": 8080
+    }
+  noun: |-
+    {
+        "host": "noun-service",
+        "port": 80
+    }
+kind: ConfigMap
+metadata:
+  name: insult-config
+'''
+    openshift.withCluster() {
+        openshift.withProject(project) {
+            openshift.apply(template, "--namespace=${namespace}")
+        }
+    }
+}
+
 pipeline {
     agent {
         label 'jenkins-slave-mvn'
@@ -185,17 +222,6 @@ pipeline {
         OPENSHIFT_KAFKA_BOOTSTRAP = 'my-cluster-kafka.default:9092'
     }
     stages {
-        stage('Define Variables') {
-            steps {
-                script {
-                    openshift.withCluster() {
-                        ciProject = openshift.project()
-                        testProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-test')
-                        devProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-dev')
-                    }
-                }
-            }
-        }
         stage('Quality And Security') {
             parallel {
                 stage('OWASP Dependency Check') {
