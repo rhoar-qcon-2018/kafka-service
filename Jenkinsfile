@@ -132,7 +132,7 @@ pipeline {
             steps {
                 script {
                     openshift.withCluster() {
-                        openshift.selector('bc', PROJECT_NAME).startBuild("--from-file=${PROJECT_NAME}.jar", '--wait')
+                        openshift.selector('bc', PROJECT_NAME).startBuild("--from-file=target/${PROJECT_NAME}.jar", '--wait')
                     }
                 }
             }
