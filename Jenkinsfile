@@ -97,9 +97,7 @@ pipeline {
                             openshift.withCluster() {
                                 def ciProject = openshift.project()
                                 def testProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-test')
-                                openshift.withProject(testProject) {
-                                    openshift.newApp("--name=${PROJECT_NAME}", "--allow-missing-imagestream-tags=true", "--image-stream=${PROJECT_NAME}").narrow('svc').expose()
-                                }
+                                sh "oc new-app --namespace=${testProject} --name=${PROJECT_NAME} --allow-missing-imagestream-tags=true --image-stream=${PROJECT_NAME}"
                             }
                         }
                     }
@@ -123,9 +121,7 @@ pipeline {
                             openshift.withCluster() {
                                 def ciProject = openshift.project()
                                 def devProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-dev')
-                                openshift.withProject(devProject) {
-                                    openshift.newApp("--name=${PROJECT_NAME}", "--allow-missing-imagestream-tags=true", "--image-stream=${PROJECT_NAME}").narrow('svc').expose()
-                                }
+                                sh "oc new-app --namespace=${devProject} --name=${PROJECT_NAME} --allow-missing-imagestream-tags=true --image-stream=${PROJECT_NAME}"
                             }
                         }
                     }
