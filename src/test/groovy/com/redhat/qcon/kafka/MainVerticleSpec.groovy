@@ -30,6 +30,8 @@ class MainVerticleSpec extends Specification {
     def 'Test MainVerticle deployment'() {
         given: 'An instance of Vert.x'
             def vertx = Vertx.vertx()
+        and: 'A message to be published'
+            def message = new JsonObject().put('Test', 'true').put('uuid', UUID.randomUUID().toString())
         and: 'An instance of AsyncConditions'
             def async = new AsyncConditions(2)
         when: 'We deploy MainVerticle, then set up a consumer, and then publish to the queue'
@@ -43,10 +45,11 @@ class MainVerticleSpec extends Specification {
                     println('Completed receipt of message')
                     async.evaluate {
                         m.body().getString('Test') == 'true'
+                        m.body().getString('uuid') == message.getString('uuid')
                     }
                 })
 
-                KafkaService.createProxy(vertx, 'kafka.service').publish(new JsonObject().put('Test', 'true'), { res1 ->
+                KafkaService.createProxy(vertx, 'kafka.service').publish(message, { res1 ->
                     println('Completed publish of message')
                 })
             })
