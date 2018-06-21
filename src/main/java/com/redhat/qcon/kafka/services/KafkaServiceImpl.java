@@ -31,6 +31,7 @@ public class KafkaServiceImpl implements KafkaService {
 
     @Override
     public void publish(JsonObject insult, Handler<AsyncResult<Void>> handler) {
+        LOG.info("Received Favorite Message: {}", insult.encodePrettily());
         KafkaProducerRecord<String, String> favorite = KafkaProducerRecord.create("favorites", insult.encode());
         producer.write(favorite, meta -> Future.succeededFuture());
     }
