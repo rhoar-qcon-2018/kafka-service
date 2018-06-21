@@ -53,6 +53,8 @@ class MainVerticleSpec extends Specification {
                     println('Completed publish of message')
                 })
 
+                Thread.sleep(1000)
+
                 KafkaService.createProxy(vertx, 'kafka.service').publish(message, { res1 ->
                     println('Completed publish of message')
                 })
