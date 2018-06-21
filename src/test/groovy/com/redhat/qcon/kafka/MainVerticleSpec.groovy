@@ -15,7 +15,7 @@ class MainVerticleSpec extends Specification {
 
     def setupSpec() {
         if (System.getenv('OPENSHIFT_BUILD_SOURCE') != null && System.getenv('OPENSHIFT_BUILD_SOURCE').trim() != '') {
-            System.setProperty('bootstrap.servers', System.getenv('OPENSHIFT_KAFKA_BOOTSTRAP'))
+            System.setProperty('bootstrap.servers', 'PLAINTEXT://'+System.getenv('OPENSHIFT_KAFKA_BOOTSTRAP'))
             println('Building Inside OpenShift, Cannot use TestContainers')
         } else {
             println('Building Locally, using TestContainers')
@@ -24,6 +24,7 @@ class MainVerticleSpec extends Specification {
 
             System.setProperty('bootstrap.servers', kafka.getBootstrapServers())
             println(System.getProperty('bootstrap.servers'))
+            println(System.getProperty('bootstrap.servers'))
         }
     }
 
@@ -31,7 +32,7 @@ class MainVerticleSpec extends Specification {
         given: 'An instance of Vert.x'
             def vertx = Vertx.vertx()
         and: 'A message to be published'
-            def message = new JsonObject().put('Test', 'true').put('uuid', UUID.randomUUID().toString())
+            def message = new JsonObject().put('test', 'true').put('uuid', UUID.randomUUID().toString())
         and: 'An instance of AsyncConditions'
             def async = new AsyncConditions(2)
         when: 'We deploy MainVerticle, then set up a consumer, and then publish to the queue'
@@ -44,7 +45,7 @@ class MainVerticleSpec extends Specification {
                 vertx.eventBus().consumer(MainVerticle.FAVORITES_EB_ADDRESS, { m ->
                     println('Completed receipt of message')
                     async.evaluate {
-                        m.body().getString('Test') == 'true'
+                        m.body().getString('test') == 'true'
                         m.body().getString('uuid') == message.getString('uuid')
                     }
                 })
