@@ -35,6 +35,12 @@ public class KafkaServiceImpl implements KafkaService {
         LOG.info("Received Favorite Message: {}", insult.encodePrettily());
         insult.put("uuid", UUID.randomUUID().toString());
         KafkaProducerRecord<String, String> favorite = KafkaProducerRecord.create("favorites", insult.encode());
-        producer.write(favorite, meta -> Future.succeededFuture());
+        producer.write(favorite, r -> {
+            if (r.succeeded()) {
+                handler.handle(Future.succeededFuture());
+            } else {
+                handler.handle(Future.failedFuture(r.cause()));
+            }
+        });
     }
 }
