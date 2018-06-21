@@ -1,7 +1,7 @@
 {
   "port": 9092,
   "zkPort": 2181,
-  "bootstrap.servers": "localhost:9092",
+  "bootstrap.servers": "my-cluster-kafka.default:9092",
   "key.deserializer": "org.apache.kafka.common.serialization.StringDeserializer",
   "value.deserializer":"org.apache.kafka.common.serialization.StringDeserializer",
   "key.serializer": "org.apache.kafka.common.serialization.StringSerializer",
