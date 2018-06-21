@@ -71,6 +71,23 @@ items:
     namespace: '${targetNamespace}'
   spec: {}
 - apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: kafka-config
+    labels:
+      app: kafka-service
+  data:
+    auto.offset.reset: earliest
+    bootstrap.servers: 'my-cluster-kafka.default:9092'
+    enable.auto.commit: 'false'
+    group.id: favorites.group
+    key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    key.serializer: org.apache.kafka.common.serialization.StringSerializer
+    port: '9092'
+    value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value.serializer: org.apache.kafka.common.serialization.StringSerializer
+    zkPort: '2181'
+- apiVersion: v1
   kind: DeploymentConfig
   metadata:
     labels:
