@@ -24,7 +24,6 @@ class MainVerticleSpec extends Specification {
 
             System.setProperty('bootstrap.servers', kafka.getBootstrapServers())
             println(System.getProperty('bootstrap.servers'))
-            println(System.getProperty('bootstrap.servers'))
         }
     }
 
