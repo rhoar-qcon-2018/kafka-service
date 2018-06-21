@@ -114,6 +114,22 @@ items:
                 protocol: TCP
               - containerPort: 8080
                 protocol: TCP
+            livenessProbe:
+                failureThreshold: 3
+                tcpSocket:
+                  port: 5800
+                initialDelaySeconds: 5
+                periodSeconds: 10
+                successThreshold: 1
+                timeoutSeconds: 1
+            readinessProbe:
+              failureThreshold: 3
+              tcpSocket:
+                port: 5800
+              initialDelaySeconds: 10
+              periodSeconds: 10
+              successThreshold: 1
+              timeoutSeconds: 1
             resources: {}
             terminationMessagePath: /dev/termination-log
         dnsPolicy: ClusterFirst
