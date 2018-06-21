@@ -41,7 +41,7 @@ public class MainVerticle extends AbstractVerticle {
         // This config is ONLY loaded when the environment variable KUBERNETES_NAMESPACE is set.
         ConfigStoreOptions confOpts = new ConfigStoreOptions()
                 .setType("configmap")
-                .setConfig(new JsonObject().put("name", "insult-config"))
+                .setConfig(new JsonObject().put("name", "kafka-config"))
                 .setOptional(true);
 
         ConfigStoreOptions sysProps = new ConfigStoreOptions()
@@ -60,7 +60,7 @@ public class MainVerticle extends AbstractVerticle {
     }
 
     Maybe<JsonObject> loadKafkaService(JsonObject config) {
-        LOG.info(new JsonObject().encodePrettily());
+        LOG.info(config.encodePrettily());
         KafkaService kafkaService = new KafkaServiceImpl(vertx.getDelegate(), config);
         new ServiceBinder(vertx.getDelegate()).setAddress("kafka.service")
                 .register(KafkaService.class, kafkaService);
