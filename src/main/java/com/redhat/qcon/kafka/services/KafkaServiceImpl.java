@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class KafkaServiceImpl implements KafkaService {
@@ -32,6 +33,7 @@ public class KafkaServiceImpl implements KafkaService {
     @Override
     public void publish(JsonObject insult, Handler<AsyncResult<Void>> handler) {
         LOG.info("Received Favorite Message: {}", insult.encodePrettily());
+        insult.put("uuid", UUID.randomUUID().toString());
         KafkaProducerRecord<String, String> favorite = KafkaProducerRecord.create("favorites", insult.encode());
         producer.write(favorite, meta -> Future.succeededFuture());
     }
