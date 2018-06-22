@@ -33,14 +33,12 @@ public class KafkaServiceImpl implements KafkaService {
     @Override
     public void publish(JsonObject insult, Handler<AsyncResult<Void>> handler) {
         LOG.info("Received Favorite Message: {}", insult.encodePrettily());
+
+        Future<Void> fut = Future.future();
+        fut.setHandler(handler);
+
         insult.put("uuid", UUID.randomUUID().toString());
         KafkaProducerRecord<String, String> favorite = KafkaProducerRecord.create("favorites", insult.encode());
-        producer.write(favorite, r -> {
-            if (r.succeeded()) {
-                handler.handle(Future.succeededFuture());
-            } else {
-                handler.handle(Future.failedFuture(r.cause()));
-            }
-        });
+        producer.rxWrite(favorite).subscribe(r -> fut.complete(), fut::fail);
     }
 }
