@@ -259,15 +259,6 @@ pipeline {
         stage('OpenShift Deployments') {
             parallel {
                 stage('Publish Artifacts') {
-                    when {
-                        expression {
-                            def retVal = sh(returnStatus: true, script: 'curl http://nexus:8081/repository/maven-releases/com/redhat/qcon/kafka-service/1.0.0/kafka-service-1.0.0.pom')
-                            if (retVal > 0) {
-                                return true
-                            }
-                            return false
-                        }
-                    }
                     steps {
                         sh 'mvn package deploy:deploy -DskipTests -DaltDeploymentRepository=nexus::default::http://nexus:8081/repository/maven-releases/'
                     }
