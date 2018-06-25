@@ -222,7 +222,7 @@ pipeline {
                 }
                 stage('Compile & Test') {
                     steps {
-                        sh 'mvn -T 2 package'
+                        sh 'mvn -T 2 package -DskipTests'
                     }
                 }
                 stage('Ensure SonarQube Webhook is configured') {
