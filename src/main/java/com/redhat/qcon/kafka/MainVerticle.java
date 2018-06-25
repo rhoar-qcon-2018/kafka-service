@@ -79,8 +79,10 @@ public class MainVerticle extends AbstractVerticle {
             vertx.eventBus().publish(FAVORITES_EB_ADDRESS, new JsonObject(r.value()));
         });
         consumer.rxSubscribe("favorites")
-            .subscribe(
-                    () -> LOG.info("Message received from queue"),
+            .subscribe(r -> {
+                        LOG.info("Publishing message to event bus");
+                        vertx.eventBus().publish(FAVORITES_EB_ADDRESS, new JsonObject(r.value()));
+                    },
                     e -> LOG.warn("Unable to process message", e)
             );
         return Maybe.just(config);
