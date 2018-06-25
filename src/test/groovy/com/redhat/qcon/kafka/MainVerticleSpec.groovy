@@ -60,6 +60,6 @@ class MainVerticleSpec extends Specification {
                 })
             })
         then: 'Expect a successful deployment and successful message exchange'
-            async.await(30)
+            async.await(60)
     }
 }
