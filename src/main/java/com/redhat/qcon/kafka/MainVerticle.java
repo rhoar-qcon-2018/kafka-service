@@ -74,17 +74,9 @@ public class MainVerticle extends AbstractVerticle {
         Map<String, String> cfg = config().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString()));
 
         KafkaConsumer<String, String> consumer = KafkaConsumer.create(vertx, cfg);
-        consumer.handler(r -> {
-            LOG.info("Publishing message to event bus");
-            vertx.eventBus().publish(FAVORITES_EB_ADDRESS, new JsonObject(r.value()));
-        });
-        consumer.rxSubscribe("favorites")
-            .subscribe(r -> {
-                        LOG.info("Publishing message to event bus");
-                        vertx.eventBus().publish(FAVORITES_EB_ADDRESS, new JsonObject(r.value()));
-                    },
-                    e -> LOG.warn("Unable to process message", e)
-            );
+        consumer.subscribe("favorites")
+                .toObservable()
+                .subscribe(r -> vertx.eventBus().send(FAVORITES_EB_ADDRESS, new JsonObject(r.value())));
         return Maybe.just(config);
     }
 
