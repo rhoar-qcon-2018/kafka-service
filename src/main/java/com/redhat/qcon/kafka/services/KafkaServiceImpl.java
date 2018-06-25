@@ -39,6 +39,12 @@ public class KafkaServiceImpl implements KafkaService {
 
         insult.put("uuid", UUID.randomUUID().toString());
         KafkaProducerRecord<String, String> favorite = KafkaProducerRecord.create("favorites", insult.encode());
-        producer.rxWrite(favorite).subscribe(r -> fut.complete(), fut::fail);
+        producer.rxWrite(favorite).subscribe(r -> {
+            LOG.info("Message sent to Kafka");
+            fut.complete();
+        }, e -> {
+            LOG.error("Failed to publish message to Kafka");
+            fut.fail(e);
+        });
     }
 }
