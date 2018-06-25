@@ -33,7 +33,7 @@ class MainVerticleSpec extends Specification {
         and: 'A message to be published'
             def message = new JsonObject().put('test', 'true').put('uuid', UUID.randomUUID().toString())
         and: 'An instance of AsyncConditions'
-            def async = new AsyncConditions(1)
+            def async = new AsyncConditions(2)
         when: 'We deploy MainVerticle, then set up a consumer, and then publish to the queue'
             vertx.deployVerticle(MainVerticle.class.getCanonicalName(), { res ->
                 println('Completed deployment')
