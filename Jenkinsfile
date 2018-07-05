@@ -71,7 +71,7 @@ items:
       app: kafka-service
   data:
     auto.offset.reset: earliest
-    bootstrap.servers: 'PLAINTEXT://my-cluster-kafka.default:9092'
+    bootstrap.servers: 'PLAINTEXT://my-cluster-kafka:9092'
     enable.auto.commit: 'false'
     group.id: favorites.group
     key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
