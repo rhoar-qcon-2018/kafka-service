@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 public class KafkaServiceImpl implements KafkaService {
 
     private static final Logger LOG = LoggerFactory.getLogger(KafkaServiceImpl.class);
+    public static final String FAVORITES_QUEUE = "favorites";
 
     KafkaProducer<String, String> producer;
 
@@ -34,11 +35,14 @@ public class KafkaServiceImpl implements KafkaService {
     public void publish(JsonObject insult, Handler<AsyncResult<Void>> handler) {
         LOG.info("Received Favorite Message: {}", insult.encodePrettily());
 
-        Future<Void> fut = Future.future();
-        fut.setHandler(handler);
-
         insult.put("uuid", UUID.randomUUID().toString());
-        KafkaProducerRecord<String, String> favorite = KafkaProducerRecord.create("favorites", insult.encode());
-        producer.rxWrite(favorite).subscribe(r -> fut.complete(), fut::fail);
+        KafkaProducerRecord<String, String> favorite = KafkaProducerRecord.create(FAVORITES_QUEUE, insult.encode());
+        producer.write(favorite, r -> {
+            if (r.succeeded()) {
+                handler.handle(Future.succeededFuture());
+            } else {
+                handler.handle(Future.failedFuture(r.cause()));
+            }
+        });
     }
 }
