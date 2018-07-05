@@ -259,6 +259,13 @@ pipeline {
         stage('OpenShift Deployments') {
             parallel {
                 stage('Publish Artifacts') {
+                    when {
+                        not {
+                            expression {
+                                sh 'curl -vv http://nexus:8081/repository/maven-releases/com/redhat/qcon/kafka-service/1.0.0/kafka-service-1.0.1.pom'
+                            }
+                        }
+                    }
                     steps {
                         sh 'mvn package deploy:deploy -DskipTests -DaltDeploymentRepository=nexus::default::http://nexus:8081/repository/maven-releases/'
                     }
