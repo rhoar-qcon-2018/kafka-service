@@ -79,7 +79,7 @@ public class MainVerticle extends AbstractVerticle {
         consumer.handler(r -> vertx.eventBus().publish(FAVORITES_EB_ADDRESS, new JsonObject(r.value())));
         consumer.subscribe(FAVORITES_QUEUE)
                 .toObservable()
-                .subscribe(r -> vertx.eventBus().send(FAVORITES_EB_ADDRESS, new JsonObject(r.value())));
+                .subscribe(r -> vertx.eventBus().publish(FAVORITES_EB_ADDRESS, new JsonObject(r.value())));
         return Maybe.just(config);
     }
 
