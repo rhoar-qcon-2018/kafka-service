@@ -76,7 +76,6 @@ public class MainVerticle extends AbstractVerticle {
         Map<String, String> cfg = config().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString()));
 
         KafkaConsumer<String, String> consumer = KafkaConsumer.create(vertx, cfg);
-        consumer.handler(r -> vertx.eventBus().publish(FAVORITES_EB_ADDRESS, new JsonObject(r.value())));
         consumer.subscribe(FAVORITES_QUEUE)
                 .toObservable()
                 .subscribe(r -> vertx.eventBus().publish(FAVORITES_EB_ADDRESS, new JsonObject(r.value())));
