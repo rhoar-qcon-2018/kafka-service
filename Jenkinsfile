@@ -261,7 +261,7 @@ pipeline {
                     when {
                         not {
                             expression {
-                                sh 'curl -vv http://nexus:8081/repository/maven-releases/com/redhat/qcon/kafka-service/1.0.0/kafka-service-1.0.1.pom'
+                                sh 'curl -vv http://nexus:8081/repository/maven-releases/com/redhat/qcon/kafka-service/1.0.0/kafka-service-1.0.1.pom | grep artifactId'
                             }
                         }
                     }
