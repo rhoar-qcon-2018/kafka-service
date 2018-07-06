@@ -259,10 +259,8 @@ pipeline {
             parallel {
                 stage('Publish Artifacts') {
                     when {
-                        not {
-                            expression {
-                                sh returnStatus: true, script: 'curl -vv http://nexus:8081/repository/maven-releases/com/redhat/qcon/kafka-service/1.0.0/kafka-service-1.0.1.pom | grep artifactId'
-                            }
+                        expression {
+                            sh returnStatus: true, script: 'curl -vv http://nexus:8081/repository/maven-releases/com/redhat/qcon/kafka-service/1.0.0/kafka-service-1.0.1.pom | grep artifactId'
                         }
                     }
                     steps {
