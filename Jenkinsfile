@@ -260,7 +260,11 @@ pipeline {
                 stage('Publish Artifacts') {
                     when {
                         expression {
-                            sh returnStatus: true, script: 'curl -vv http://nexus:8081/repository/maven-releases/com/redhat/qcon/kafka-service/1.0.0/kafka-service-1.0.1.pom | grep artifactId'
+			    not {
+                    	        def retVal = sh(returnStatus: true, script: 'curl -vv http://nexus:8081/repository/maven-releases/com/redhat/qcon/kafka-service/1.0.0/kafka-service-1.0.1.pom | grep artifactId')
+				echo "RESULT: ${retVal}"
+                                return (retVal > 0)
+			    }
                         }
                     }
                     steps {
