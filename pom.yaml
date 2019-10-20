@@ -1,0 +1,92 @@
+modelEncoding: UTF-8
+modelVersion: 4.0.0
+groupId: com.redhat.qcon
+artifactId: kafka-service
+version: 1.0.0
+packaging: jar
+properties: {vertx.version: 3.8.3, slf4j.version: 1.7.28, vertx.verticle: com.redhat.qcon.kafka.MainVerticle,
+  vertx-maven-plugin.version: 1.0.15, maven.compiler.source: 1.8, project.build.sourceEncoding: UTF-8,
+  maven.compiler.target: 1.8}
+dependencyManagement:
+  dependencies:
+  - {groupId: io.vertx, artifactId: vertx-dependencies, version: '${vertx.version}',
+    type: pom, scope: import}
+  - {groupId: ch.qos.logback, artifactId: logback-classic, version: 1.2.3}
+  - {groupId: com.fasterxml.jackson.core, artifactId: jackson-databind, version: 2.9.10.1}
+  - {groupId: com.google.guava, artifactId: guava, version: 28.1-jre}
+dependencies:
+- {groupId: io.vertx, artifactId: vertx-web-api-contract}
+- {groupId: io.vertx, artifactId: vertx-rx-java2}
+- {groupId: io.vertx, artifactId: vertx-web-client}
+- {groupId: io.vertx, artifactId: vertx-service-proxy}
+- {groupId: io.vertx, artifactId: vertx-config-kubernetes-configmap}
+- {groupId: io.vertx, artifactId: vertx-infinispan}
+- groupId: io.vertx
+  artifactId: vertx-kafka-client
+  exclusions:
+  - {artifactId: '*', groupId: log4j}
+  - {artifactId: slf4j-log4j12, groupId: org.slf4j}
+- {groupId: org.infinispan, artifactId: infinispan-cloud, version: 9.4.16.Final}
+- {groupId: org.jgroups.kubernetes, artifactId: jgroups-kubernetes, version: 1.0.13.Final}
+- {groupId: io.vertx, artifactId: vertx-codegen, classifier: processor, scope: provided}
+- {groupId: org.slf4j, artifactId: slf4j-api, version: '${slf4j.version}'}
+- {groupId: org.slf4j, artifactId: slf4j-simple, version: '${slf4j.version}'}
+- {groupId: org.slf4j, artifactId: log4j-over-slf4j, version: '${slf4j.version}'}
+- {groupId: org.spockframework, artifactId: spock-core, version: 1.3-groovy-2.5, scope: test}
+- {groupId: org.codehaus.groovy, artifactId: groovy-all, version: 2.5.8, type: pom, scope: test}
+- {groupId: net.bytebuddy, artifactId: byte-buddy, version: 1.10.2, scope: test}
+- {groupId: org.objenesis, artifactId: objenesis, version: 3.1, scope: test}
+- groupId: org.testcontainers
+  artifactId: kafka
+  version: 1.12.2
+  exclusions:
+  - {artifactId: '*', groupId: log4j}
+build:
+  finalName: kafka-service
+  plugins:
+  - groupId: io.reactiverse
+    artifactId: vertx-maven-plugin
+    version: ${vertx-maven-plugin.version}
+    configuration: {redeploy: true}
+    executions:
+    - goals: [initialize, package]
+      id: vmp
+      inherited: true
+      priority: 0
+  - groupId: org.codehaus.gmavenplus
+    artifactId: gmavenplus-plugin
+    version: 1.8.0
+    executions:
+    - goals: [compile, compileTests]
+      id: default
+      inherited: true
+      priority: 0
+  - groupId: org.apache.maven.plugins
+    artifactId: maven-surefire-plugin
+    version: 2.20.1
+    configuration:
+      useFile: false
+      includes: ['**/*Spec.java']
+  - groupId: org.jacoco
+    artifactId: jacoco-maven-plugin
+    version: 0.7.6.201602180812
+    executions:
+    - goals: [prepare-agent]
+      id: jacoco-initialize
+      inherited: true
+      priority: 0
+    - goals: [report]
+      id: jacoco-site
+      inherited: true
+      phase: test
+      priority: 0
+  - groupId: org.owasp
+    artifactId: dependency-check-maven
+    version: 5.2.2
+    configuration: {failBuildOnCVSS: 8, suppressionFile: suppressedDependencyCVE.xml}
+    executions:
+    - goals: [check]
+      id: default
+      inherited: true
+      priority: 0
+childProjectUrlInheritAppendPath: true

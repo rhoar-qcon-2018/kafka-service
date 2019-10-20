@@ -2,6 +2,7 @@ package com.redhat.qcon.kafka;
 
 import com.redhat.qcon.kafka.services.KafkaService;
 import com.redhat.qcon.kafka.services.KafkaServiceImpl;
+import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
@@ -9,6 +10,7 @@ import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.config.ConfigRetriever;
 import io.vertx.reactivex.core.AbstractVerticle;
+import io.vertx.reactivex.core.Promise;
 import io.vertx.reactivex.kafka.client.consumer.KafkaConsumer;
 import io.vertx.serviceproxy.ServiceBinder;
 import org.jetbrains.annotations.NotNull;
@@ -83,13 +85,14 @@ public class MainVerticle extends AbstractVerticle {
     }
 
     @Override
-    public void start(Future<Void> startFuture) {
-        this.initConfigRetriever()
+    public Completable rxStart() {
+        return this.initConfigRetriever()
             .flatMap(this::mergeConfig)
             .flatMap(this::loadKafkaService)
             .flatMap(this::bridgeKafkaTopic)
-            .doOnError(startFuture::fail)
-            .subscribe(c -> startFuture.complete());
+            .doOnError(Completable::error)
+            .doOnComplete(Completable::complete)
+            .toFlowable().ignoreElements();
     }
 
     @NotNull
